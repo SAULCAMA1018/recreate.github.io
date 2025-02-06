@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Registro de 40 Visitantes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 100%;
+            margin: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+        input, button {
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .form-group label {
+            font-weight: bold;
+            display: block;
+        }
+        .scrollable-container {
+            max-height: 75vh;
+            overflow-y: auto;
+            padding-right: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align: center;">Registro de 40 Visitantes</h2>
+        <div id="formContainer" class="scrollable-container"></div>
+        <button id="sendButton" onclick="sendEmail()">Enviar</button>
+    </div>
+
+    <script>
+        function createForm() {
+            console.log("Ejecutando createForm()");
+            let formContainer = document.getElementById("formContainer");
+            if (!formContainer) {
+                console.error("Error: No se encontró el contenedor del formulario.");
+                return;
+            }
+            formContainer.innerHTML = "";
+            
+            for (let i = 0; i < 40; i++) {
+                let formGroup = document.createElement("div");
+                formGroup.classList.add("form-group");
+                formGroup.innerHTML = `
+                    <h3>Visitante ${i + 1}</h3>
+                    <label>Nombre:</label> <input type="text" id="name${i}" placeholder="Nombre Completo">
+                    <label>DNI:</label> <input type="text" id="dni${i}" placeholder="DNI o Documento">
+                    <label>Edad:</label> <input type="number" id="age${i}" placeholder="Edad">
+                    <label>Teléfono:</label> <input type="tel" id="phone${i}" placeholder="Número de Teléfono">
+                    <label>Fecha de Nacimiento:</label> <input type="date" id="date${i}">
+                `;
+                formContainer.appendChild(formGroup);
+            }
+            
+            document.getElementById("sendButton").style.display = "block";
+        }
+
+        function sendEmail() {
+            let email = "s.cama.a1018@gmail.com";
+            let subject = "Registro de Visitantes";
+            let bodyContent = "Registro de visitantes:\n\n";
+            
+            for (let i = 0; i < 40; i++) {
+                let nameField = document.getElementById(`name${i}`);
+                let dniField = document.getElementById(`dni${i}`);
+                let ageField = document.getElementById(`age${i}`);
+                let phoneField = document.getElementById(`phone${i}`);
+                let dateField = document.getElementById(`date${i}`);
+                
+                if (nameField && dniField && ageField && phoneField && dateField) {
+                    let name = nameField.value.trim();
+                    let dni = dniField.value.trim();
+                    let age = ageField.value.trim();
+                    let phone = phoneField.value.trim();
+                    let date = dateField.value.trim();
+                    
+                    if (name && dni && age && phone && date) {
+                        bodyContent += `Visitante ${i + 1}\n` +
+                                       `Nombre: ${name}\nDNI: ${dni}\nEdad: ${age}\nTeléfono: ${phone}\nFecha: ${date}\n\n`;
+                    }
+                }
+            }
+            
+            if (bodyContent === "Registro de visitantes:\n\n") {
+                alert("Por favor, ingrese al menos un visitante antes de enviar.");
+                return;
+            }
+            
+            let mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyContent)}`;
+            window.location.href = mailtoLink;
+        }
+
+        function ensureFormLoads() {
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                createForm();
+            } else {
+                document.addEventListener("DOMContentLoaded", createForm);
+                window.onload = createForm;
+            }
+        }
+
+        ensureFormLoads();
+
+        // Asegurar compatibilidad con WhatsApp y apertura en móviles
+        if (navigator.userAgent.toLowerCase().indexOf("whatsapp") > -1) {
+            alert("Si tienes problemas para ver el formulario, ábrelo en un navegador como Chrome o Safari.");
+        }
+    </script>
+</body>
+</html>
